@@ -1,0 +1,124 @@
+{% extends 'base_main.html' %}
+
+{% block title %}
+    爱家-注册
+{% endblock %}
+
+{% block css %}
+    {{ super() }}
+    <link href="/static/css/ihome/register.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="logo-bar"><a href="/home/index/"><img src="/static/images/logo@128x59.png"></a></div>
+        <form class="form-register" method="post">
+            {# {{ form.csrf_token }} #}
+            <div class="form-group form-group-lg">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-mobile fa-2x fa-fw"></i></div>
+                    <input type="number" class="form-control" name="mobile" id="mobile" placeholder="手机号" required>
+                </div>
+            </div>
+            <div class="error-msg" id="mobile-err"><i class="fa fa-exclamation-circle"></i><span></span></div>
+            <div class="form-group form-group-lg">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-image fa-lg fa-fw"></i></div>
+                    <input type="text" class="form-control" name="imagecode" id="imagecode" placeholder="图片验证码" required>
+                    <div class="input-group-addon image-code" onclick="generateImageCode();"><p id="idcode" style="width:50px;"></p></div>
+                </div>
+            </div>
+            <div class="error-msg" id="image-code-err"><i class="fa fa-exclamation-circle"></i><span></span></div>
+            <!--<div class="form-group form-group-lg">-->
+                <!--<div class="input-group">-->
+                    <!--<div class="input-group-addon"><i class="fa fa-envelope-o fa-lg fa-fw"></i></div>-->
+                    <!--<input type="text" class="form-control" name="phonecode" id="phonecode" placeholder="短信验证码" required>-->
+                    <!--<div class="phonecode input-group-addon">-->
+                        <!--<a class="phonecode-a" href="javascript:;" onclick="sendSMSCode();">获取验证码</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="error-msg" id="phone-code-err"><i class="fa fa-exclamation-circle"></i><span></span></div>-->
+            <div class="form-group form-group-lg">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-lg fa-fw"></i></div>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="密码" required>
+                </div>
+            </div>
+            <div class="error-msg" id="password-err"><i class="fa fa-exclamation-circle"></i><span></span></div>
+            <div class="form-group form-group-lg">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-lg fa-fw"></i></div>
+                    <input type="password" class="form-control" name="password2" id="password2" placeholder="确认密码" required>
+                </div>
+            </div>
+            <div class="error-msg" id="password2-err"><i class="fa fa-exclamation-circle"></i><span></span></div>
+            <button type="submit" class="btn btn-lg btn-theme btn-block">立即注册</button>
+            <p class="login-a">已有账号，<a href="/user/login/">立即登陆</a></p>
+        </form>
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/js/ihome/register.js"></script>
+    <script>
+    $(".form-register").submit(function(e){
+        e.preventDefault();
+        mobile = $("#mobile").val();
+//      phoneCode = $("#phonecode").val();
+        passwd = $("#password").val();
+        passwd2 = $("#password2").val();
+        show_code = $('#idcode').html();
+        imageCode = $("#imagecode").val();
+        if (!mobile) {
+            $("#mobile-err span").html("请填写正确的手机号！");
+            $("#mobile-err").show();
+            return;
+        }
+//        if (!phoneCode) {
+//            $("#phone-code-err span").html("请填写短信验证码！");
+//            $("#phone-code-err").show();
+//            return;
+//        }
+        if (!passwd) {
+            $("#password-err span").html("请填写密码!");
+            $("#password-err").show();
+            return;
+        }
+        if (show_code != imageCode) {
+            $("#image-code-err span").html("验证码错误!");
+            $("#image-code-err").show();
+            generateImageCode();
+            return;
+        }
+        if (passwd != passwd2) {
+            $("#password2-err span").html("两次密码不一致!");
+            $("#password2-err").show();
+            return;
+        }
+        $.ajax({
+            url: '/user/register/',
+            data: {'mobile': mobile, 'password': passwd, 'password2': passwd2},
+            dataType: 'json',
+            type: 'POST',
+            success: function(data) {
+                if (data.code == 200) {
+                    location.href = '/user/login/'
+                }
+                if (data.code == 1004) {
+                    alert(data.msg)
+                }
+                if (data.code == 1005) {
+                    alert(data.msg)
+                }
+                if (data.code == 1006) {
+                    alert(data.msg)
+                }
+            },
+            error: function(data) {
+                alert('请求失败')
+            },
+        });
+    });
+    </script>
+    </div>
+{% endblock %}
