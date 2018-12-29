@@ -54,7 +54,12 @@ def orders():
     if request.method == 'GET':
         return render_template('orders.html')
     if request.method == 'POST':
-        pass
+        value = request.form.get('value')
+        order_id = request.form.get('order_id')
+        order = Order.query.filter(Order.id == order_id).first()
+        order.comment = value
+        order.add_update()
+        return jsonify({'code': 200, 'value': value})
 
 
 @order.route('/order_id/', methods=['GET', 'POST'])

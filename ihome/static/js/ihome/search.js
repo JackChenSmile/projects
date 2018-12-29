@@ -46,7 +46,6 @@ function updateHouseData(action) {
     };
     //发起ajax请求，获取数据，并显示在模板中
     $('#house_list li').remove();
-    console.log(params.aid)
     $.ajax({
         url: '/home/search_all_house/',
         data: {'aid': params.aid, 'startDate': params.sd, 'endDate': params.ed},
